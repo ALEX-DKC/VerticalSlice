@@ -336,3 +336,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+My project/Assets/FreeTestCharacterAsuna/Textures/AsunaBody/AsunaBodyPSDSourcefile.zip
+My project/Assets/FreeTestCharacterAsuna/Textures/AsunaHead/AsunaHeadPSDSourcefile.zip
+My project/Assets/FreeTestCharacterAsuna/Textures/CharacterStandardEquipment/CharacterStandardEquipmentPSDSourcefile.zip
