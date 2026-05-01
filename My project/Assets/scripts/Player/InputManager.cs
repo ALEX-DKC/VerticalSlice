@@ -23,9 +23,9 @@ public class InputManager : MonoBehaviour
     [Header("Input Button Flag")]
     public bool shiftInput;
     public bool shootInput;
-    public bool scopeInput;
+    public bool scopeInput;          // 右键按住
     public bool reloadInput;
-    public bool changeRifleInput;
+    public bool changeRifleInput;    // Tab
     public bool pauseInput;
     public bool canMove = true;
 
@@ -76,33 +76,34 @@ public class InputManager : MonoBehaviour
     {
         HandleMovementInput();
         HandleSprintingInput();
-        HandleChangeRifleInput();
         HandlePauseInput();
     }
 
     private void HandleMovementInput()
     {
         if (canMove)
-    {
-        verticalInput = movenmentInput.y;
-        horizontalInput = movenmentInput.x;
-    }
-    else
-    {
-        verticalInput = 0;
-        horizontalInput = 0;
-    }
+        {
+            verticalInput = movenmentInput.y;
+            horizontalInput = movenmentInput.x;
+        }
+        else
+        {
+            verticalInput = 0f;
+            horizontalInput = 0f;
+        }
+
+        // 视角不锁
         CameraInputX = cameraInput.x;
         CameraInputY = cameraInput.y;
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
 
-        animatorManager.UpdateAnimValues(0, moveAmount, playerMovement.isRunning);
+        animatorManager.UpdateAnimValues(horizontalInput, verticalInput, playerMovement.isRunning);
     }
 
     private void HandleSprintingInput()
     {
-        if (shiftInput && moveAmount > 0.5f)
+        if (canMove && shiftInput && moveAmount > 0.5f)
         {
             playerMovement.isRunning = true;
         }
@@ -112,19 +113,38 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void HandleChangeRifleInput()
-    {
-        if (changeRifleInput)
-        {
-            changeRifleInput = false;
-        }
-    }
-
     private void HandlePauseInput()
     {
         if (pauseInput)
         {
             pauseInput = false;
         }
+    }
+
+    // ===== 给 Visual Scripting 用的方法 =====
+
+    public void SetCanMove(bool value)
+    {
+        canMove = value;
+    }
+
+    public bool IsAiming()
+    {
+        return scopeInput;
+    }
+
+    public bool IsChangeWeaponPressed()
+    {
+        return changeRifleInput;
+    }
+
+    public void ResetChangeWeaponInput()
+    {
+        changeRifleInput = false;
+    }
+
+    public void ResetAimInput()
+    {
+        scopeInput = false;
     }
 }
