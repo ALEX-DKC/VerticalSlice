@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class InputManager : MonoBehaviour
 {
     private Playercontrol playercontrols;
@@ -24,7 +25,7 @@ public class InputManager : MonoBehaviour
     public bool shiftInput;
     public bool shootInput;
     public bool scopeInput;          // 右键按住
-    public bool reloadInput;
+    public bool reloadInput;         // R
     public bool changeRifleInput;    // Tab
     public bool pauseInput;
     public bool canMove = true;
@@ -57,7 +58,6 @@ public class InputManager : MonoBehaviour
             playercontrols.PlayerActions.Scope.canceled += ctx => scopeInput = false;
 
             playercontrols.PlayerActions.Reload.performed += ctx => reloadInput = true;
-            playercontrols.PlayerActions.Reload.canceled += ctx => reloadInput = false;
 
             playercontrols.PlayerActions.C.performed += ctx => changeRifleInput = true;
 
@@ -76,6 +76,7 @@ public class InputManager : MonoBehaviour
     {
         HandleMovementInput();
         HandleSprintingInput();
+        animatorManager.UpdateAnimValues(horizontalInput, verticalInput, playerMovement.isRunning);
         HandlePauseInput();
     }
 
@@ -92,13 +93,10 @@ public class InputManager : MonoBehaviour
             horizontalInput = 0f;
         }
 
-        // 视角不锁
         CameraInputX = cameraInput.x;
         CameraInputY = cameraInput.y;
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-
-        animatorManager.UpdateAnimValues(horizontalInput, verticalInput, playerMovement.isRunning);
     }
 
     private void HandleSprintingInput()
@@ -146,5 +144,20 @@ public class InputManager : MonoBehaviour
     public void ResetAimInput()
     {
         scopeInput = false;
+    }
+
+    public bool IsReloadPressed()
+    {
+        return reloadInput;
+    }
+
+    public void ResetReloadInput()
+    {
+        reloadInput = false;
+    }
+
+    public bool HasMovementInput()
+    {
+        return Mathf.Abs(movenmentInput.x) > 0.1f || Mathf.Abs(movenmentInput.y) > 0.1f;
     }
 }

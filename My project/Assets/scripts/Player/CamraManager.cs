@@ -9,6 +9,7 @@ public class CameraManager : MonoBehaviour
 
     public Transform playerTransform;
     public Transform cameraPivot;
+    public Camera playerCamera;
 
     private Vector3 camFollowVelocity = Vector3.zero;
 
@@ -21,6 +22,16 @@ public class CameraManager : MonoBehaviour
     public float minimumPivotAngle = -30f;
     public float maximumPivotAngle = 30f;
 
+    [Header("Camera Positions")]
+    public Vector3 normalCameraLocalPosition = new Vector3(0f, 0f, -4f);
+    public Vector3 aimingCameraLocalPosition = new Vector3(0.7f, 0f, -2f);
+    public float cameraPositionLerpSpeed = 10f;
+
+    [Header("Camera FOV")]
+    public float normalFOV = 60f;
+    public float aimingFOV = 40f;
+    public float fovLerpSpeed = 10f;
+
     void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -28,18 +39,18 @@ public class CameraManager : MonoBehaviour
 
         playerTransform = FindObjectOfType<PlayerManager>().transform;
         inputManager = FindObjectOfType<InputManager>();
-    }
 
-    void Update()
-    {
-        
-        //playerMovement = FindObjectOfType<PlayerMovement>();
+        if (playerCamera == null)
+        {
+            playerCamera = GetComponentInChildren<Camera>();
+        }
     }
 
     public void HandleAllCameraMovement()
     {
         FollowTarget();
         RotateCamera();
+        HandleCameraPositionAndFOV();
     }
 
     void FollowTarget()
@@ -72,5 +83,30 @@ public class CameraManager : MonoBehaviour
         rotation.x = pivotAngle;
         targetRotation = Quaternion.Euler(rotation);
         cameraPivot.localRotation = targetRotation;
+    }
+
+    void HandleCameraPositionAndFOV()
+    {
+        if (playerCamera == null || inputManager == null) return;
+
+        Vector3 targetLocalPosition = inputManager.IsAiming()
+            ? aimingCameraLocalPosition
+            : normalCameraLocalPosition;
+
+        Transform camTransform = playerCamera.transform;
+
+        camTransform.localPosition = Vector3.Lerp(
+            camTransform.localPosition,
+            targetLocalPosition,
+            cameraPositionLerpSpeed * Time.deltaTime
+        );
+
+        float targetFOV = inputManager.IsAiming() ? aimingFOV : normalFOV;
+
+        playerCamera.fieldOfView = Mathf.Lerp(
+            playerCamera.fieldOfView,
+            targetFOV,
+            fovLerpSpeed * Time.deltaTime
+        );
     }
 }

@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using UnityEngine;
 
 public class AnimatorManager : MonoBehaviour
 {
-    Animator animator;
+    private Animator animator;
 
     private int horizontal;
     private int vertical;
     private int isAiming;
+    private int moveAmount;
+    private int reload;
 
     void Awake()
     {
@@ -18,8 +19,11 @@ public class AnimatorManager : MonoBehaviour
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
         isAiming = Animator.StringToHash("isAiming");
+        moveAmount = Animator.StringToHash("moveAmount");
+        reload = Animator.StringToHash("Reload");
     }
 
+    
     public void UpdateAnimValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         float snappedHorizontal;
@@ -38,7 +42,7 @@ public class AnimatorManager : MonoBehaviour
 
         if (verticalMovement > 0f && verticalMovement < 0.55f)
             snappedVertical = 0.5f;
-        else if (verticalMovement > 0f)
+        else if (verticalMovement > 0.55f)
             snappedVertical = 1f;
         else if (verticalMovement < 0f && verticalMovement > -0.55f)
             snappedVertical = -0.5f;
@@ -55,10 +59,21 @@ public class AnimatorManager : MonoBehaviour
 
         animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
         animator.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
+
+        bool isMoving = Mathf.Abs(horizontalMovement) > 0.1f || Mathf.Abs(verticalMovement) > 0.1f;
+        animator.SetBool(moveAmount, isMoving);
     }
 
     public void SetAiming(bool value)
     {
         animator.SetBool(isAiming, value);
     }
+
+    public void TriggerReload()
+    {
+        
+        animator.SetTrigger(reload);
+    }
+
+    
 }
