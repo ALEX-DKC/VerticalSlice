@@ -1,9 +1,11 @@
 # GDIM33 Vertical Slice
 ## Milestone 1 Devlog
 
-1，This visual scripting graph use the state machine, which has two main states: Unarmed and PistolEquipped. The player starts in Unarmed, the pistol is hidden, and use normal movement animation,. When the player presses Tab, a transition checks the weapon-switch input and moves the system into PistolEquipped. In that state, the pistol becomes visible, the animator switches to pistol animation, and the graph keeps checking the right mouse button every frame. If the player is holding right click, the graph sets the aiming animation on and disables movement. if the player releases right click, it turns aiming off and allows movement again. Pressing Tab again will triggers the opposite transition and sends the player back to the Unarmed state.
+### 1
+This visual scripting graph use the state machine, which has two main states: Unarmed and PistolEquipped. The player starts in Unarmed, the pistol is hidden, and use normal movement animation,. When the player presses Tab, a transition checks the weapon-switch input and moves the system into PistolEquipped. In that state, the pistol becomes visible, the animator switches to pistol animation, and the graph keeps checking the right mouse button every frame. If the player is holding right click, the graph sets the aiming animation on and disables movement. if the player releases right click, it turns aiming off and allows movement again. Pressing Tab again will triggers the opposite transition and sends the player back to the Unarmed state.
 
-2, [Break-down](https://docs.google.com/drawings/d/1NqhMj7zMddQUyuUmfBft3l2naNNAFNeYzsN6Gl916Xo/edit?usp=sharing)
+### 2 
+[Break-down](https://docs.google.com/drawings/d/1NqhMj7zMddQUyuUmfBft3l2naNNAFNeYzsN6Gl916Xo/edit?usp=sharing)
 
 I updated my break-down by making the inventory and weapon system more specific. In the new version, the inventory is connected to a state machine that controls which weapon state the player is in. When the player opens the inventory and clicks on a weapon, the state machine switches, and the player equips that weapon. Sate mashine really helped me make the system clearer. 
 
