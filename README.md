@@ -32,15 +32,13 @@ Step 2: Add player detection and chase behavior
 
 1.	Add variables for vision radius and shooting radius in the Guard script. 
 
-2.	detect whether the player is inside the guard’s vision radius 
+2.	Add a bool variable like to control whether the guard is in patrol mode or alert mode
 
-3.	Add a bool variable like to control whether the guard is in patrol mode or alert mode
+3.	If the guard is not alerted, make it continue walking between waypoints. 
 
-4.	If the guard is not alerted, make it continue walking between waypoints. 
+4.	If the guard is alerted when player is inside the vision radius but not yet inside the shooting radius, make the guard chase the player. 
 
-5.	If the guard is alerted when player is inside the vision radius but not yet inside the shooting radius, make the guard chase the player. 
-
-6.	While chasing, make the guard face the player and switch from walking animation to running animation. 
+5.	While chasing, make the guard face the player and switch from walking animation to running animation. 
 
 
 Step 3: Add shooting behavior when the player is close
