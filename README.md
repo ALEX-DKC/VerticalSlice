@@ -55,6 +55,8 @@ Step 3: Add shooting behavior when the player is close
 
 5.	If the player moves away, make the guard chase the player again
 
+(I have not finished the alert trigger system yet, so for testing in the scene I placed two guards manually. One guard is set to stay in the normal patrol state, and the other guard is already set to the alerted state so I can test the chase and shooting behavior.)
+
 
 2，
 
