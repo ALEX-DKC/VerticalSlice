@@ -11,7 +11,7 @@ In addition, I added an aiming system to the break-down. When the player is alre
 
 
 ## Milestone 2 Devlog
-###1，
+### 1，
 
 Step 1: Build the guard patrol system
 
@@ -56,14 +56,14 @@ Step 3: Add shooting behavior when the player is close
 (I have not finished the alert trigger system yet, so for testing in the scene I placed two guards manually. One guard is set to stay in the normal patrol state, and the other guard is already set to the alerted state so I can test the chase and shooting behavior.)
 
 
-###2，
+### 2，
 
 Yes, the task breakdown activity helped me build this milestone feature. At first, I thought the guard AI logic was a very complex system. But after breaking it down into steps, I could focus on one small part at a time. This made the whole problem much easier to solve. I first made the guard patrol, then I added chase and shooting behavior. Breaking the work into smaller steps helped me organized the task and easier to find mistakes.
 
 If I did the breakdown again, I would include the Animator setup and animation transitions more clearly in the plan. This time, I was writing the code and building the Animator at the same time, and that caused a lot of strange problems. Next time, I would plan the animation logic earlier, such as which states I need, which parameters I need, and how the transitions should work. I think that would make the whole process smoother.
 
 
-###3，
+### 3，
 
 I combined Visual Scripting and C# in my gun draw and aiming system. Visual Graph controlled the state logic, and the C# scripts handled input, movement, and animation functions, letting the Visual Scripting State Machine call methods from my C# scripts
 
