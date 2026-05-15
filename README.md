@@ -70,7 +70,7 @@ Step 4: alert trigger system
 
 Yes, the task breakdown activity helped me build this milestone feature. At first, I thought the guard AI logic was a very complex system. But after breaking it down into steps, I could focus on one small part at a time. This made the whole problem much easier to solve. I first made the guard patrol, then I added chase and shooting behavior, and alert switch. 
 
-If I did the breakdown again, I would include the Animator setup and animation transitions more clearly in the plan. This time, I was writing the code and building the Animator at the same time, and that caused a lot of strange problems. Next time, I would plan the animation logic earlier, such as which states I need, which variable I need, and how the transition connected. I think that would make the whole process smoother.
+If I did the breakdown again, I would include the Animator setup and animation transitions more clearly in the plan. This time, I was writing the code and building the Animator at the same time, and that caused a lot of bugs. Next time, I would plan the animation logic earlier, such as which states I need, which variable I need, and how the transition connected. I think that would make the whole process smoother.
 
 
 
