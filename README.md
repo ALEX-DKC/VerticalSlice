@@ -13,7 +13,7 @@ In addition, I added an aiming system to the break-down. When the player is alre
 
 
 ## Milestone 2 Devlog
-### 1，
+### 1
 
 Step 1: Build the guard patrol system
 
@@ -66,7 +66,7 @@ Step 4: alert trigger system
 
 3. If the guard is attacked by the player, set to true Alerted
 
-### 2，
+### 2
 
 Yes, the task breakdown activity helped me build this milestone feature. At first, I thought the guard AI logic was a very complex system. But after breaking it down into steps, I could focus on one small part at a time. This made the whole problem much easier to solve. I first made the guard patrol, then I added chase and shooting behavior, and alert switch. 
 
@@ -75,7 +75,7 @@ If I did the breakdown again, I would include the Animator setup and animation t
 
 
 
-### 3，
+### 3
 
 I combined Visual Scripting and C# in my gun draw and aiming system. Visual Graph controlled the state logic, and the C# scripts handled input, movement, and animation functions, letting the Visual Scripting State Machine call methods from my C# scripts
 
@@ -91,7 +91,7 @@ In architecture, the Visual Scripting State Machine controlled the two 3 weapon 
 <img width="687" height="496" alt="截屏2026-05-15 上午1 55 23" src="https://github.com/user-attachments/assets/cfa3c111-696c-494d-868f-1d60b7000fd5" />
 
 
-### 4,
+### 4
 Guard AI system and weapon system for Feature (3). 
 
 The guards have two main states: patrol and alert. In patrol mode, they move between waypoint points. The alert state is triggered when the player enters the guard’s front 60-degree vision cone or when the guard is attacked. Once alerted, the guard will chase the player and shoot when the player is close enough. (I Add a raycast vision check. If a wall is between the guard and the player, the guard will not become alerted. )
