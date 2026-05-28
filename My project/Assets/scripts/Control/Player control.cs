@@ -221,18 +221,45 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""C"",
+                    ""name"": ""Pause"",
                     ""type"": ""Button"",
-                    ""id"": ""b2e46316-5e56-4758-a844-98ddb85232e5"",
+                    ""id"": ""d5a16bc9-b098-4b73-81cf-c66c19178aaf"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Pause"",
+                    ""name"": ""SelectUnarmed"",
                     ""type"": ""Button"",
-                    ""id"": ""d5a16bc9-b098-4b73-81cf-c66c19178aaf"",
+                    ""id"": ""d2438ef4-dfdc-4522-9d10-c30b80a923a0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectPistol"",
+                    ""type"": ""Button"",
+                    ""id"": ""8833ce54-1758-4d3e-ab19-c9e8081cf8a5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectRifle"",
+                    ""type"": ""Button"",
+                    ""id"": ""71ce42e5-876b-419f-a733-fbf733b80b69"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Assassinate"",
+                    ""type"": ""Button"",
+                    ""id"": ""fbc80827-4347-4d20-9002-aaea0ce1d30f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -286,34 +313,56 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""dcfb4a44-3e25-4b54-ac99-8a09b5d23ab6"",
-                    ""path"": ""<Keyboard>/tab"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""C"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""565f667e-7dbd-499e-911f-dbca5ab304a9"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""C"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""200eb034-ad31-4462-bce7-bb2afb332c60"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""34c8abd0-6b18-4fc1-9ac1-7f6e845642b4"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectUnarmed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8cae7569-8d52-4115-9c09-b0174b021313"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectPistol"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e60b8dd-1293-4d28-84c9-fcf0971b0c4c"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectRifle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""90ff7731-6d84-40e8-8e5a-01ea2d903ca1"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Assassinate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -332,8 +381,11 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
         m_PlayerActions_Shoot = m_PlayerActions.FindAction("Shoot", throwIfNotFound: true);
         m_PlayerActions_Scope = m_PlayerActions.FindAction("Scope", throwIfNotFound: true);
         m_PlayerActions_Reload = m_PlayerActions.FindAction("Reload", throwIfNotFound: true);
-        m_PlayerActions_C = m_PlayerActions.FindAction("C", throwIfNotFound: true);
         m_PlayerActions_Pause = m_PlayerActions.FindAction("Pause", throwIfNotFound: true);
+        m_PlayerActions_SelectUnarmed = m_PlayerActions.FindAction("SelectUnarmed", throwIfNotFound: true);
+        m_PlayerActions_SelectPistol = m_PlayerActions.FindAction("SelectPistol", throwIfNotFound: true);
+        m_PlayerActions_SelectRifle = m_PlayerActions.FindAction("SelectRifle", throwIfNotFound: true);
+        m_PlayerActions_Assassinate = m_PlayerActions.FindAction("Assassinate", throwIfNotFound: true);
     }
 
     ~@Playercontrol()
@@ -526,8 +578,11 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Shoot;
     private readonly InputAction m_PlayerActions_Scope;
     private readonly InputAction m_PlayerActions_Reload;
-    private readonly InputAction m_PlayerActions_C;
     private readonly InputAction m_PlayerActions_Pause;
+    private readonly InputAction m_PlayerActions_SelectUnarmed;
+    private readonly InputAction m_PlayerActions_SelectPistol;
+    private readonly InputAction m_PlayerActions_SelectRifle;
+    private readonly InputAction m_PlayerActions_Assassinate;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerActions".
     /// </summary>
@@ -556,13 +611,25 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Reload => m_Wrapper.m_PlayerActions_Reload;
         /// <summary>
-        /// Provides access to the underlying input action "PlayerActions/C".
-        /// </summary>
-        public InputAction @C => m_Wrapper.m_PlayerActions_C;
-        /// <summary>
         /// Provides access to the underlying input action "PlayerActions/Pause".
         /// </summary>
         public InputAction @Pause => m_Wrapper.m_PlayerActions_Pause;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActions/SelectUnarmed".
+        /// </summary>
+        public InputAction @SelectUnarmed => m_Wrapper.m_PlayerActions_SelectUnarmed;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActions/SelectPistol".
+        /// </summary>
+        public InputAction @SelectPistol => m_Wrapper.m_PlayerActions_SelectPistol;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActions/SelectRifle".
+        /// </summary>
+        public InputAction @SelectRifle => m_Wrapper.m_PlayerActions_SelectRifle;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActions/Assassinate".
+        /// </summary>
+        public InputAction @Assassinate => m_Wrapper.m_PlayerActions_Assassinate;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -601,12 +668,21 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
-            @C.started += instance.OnC;
-            @C.performed += instance.OnC;
-            @C.canceled += instance.OnC;
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @SelectUnarmed.started += instance.OnSelectUnarmed;
+            @SelectUnarmed.performed += instance.OnSelectUnarmed;
+            @SelectUnarmed.canceled += instance.OnSelectUnarmed;
+            @SelectPistol.started += instance.OnSelectPistol;
+            @SelectPistol.performed += instance.OnSelectPistol;
+            @SelectPistol.canceled += instance.OnSelectPistol;
+            @SelectRifle.started += instance.OnSelectRifle;
+            @SelectRifle.performed += instance.OnSelectRifle;
+            @SelectRifle.canceled += instance.OnSelectRifle;
+            @Assassinate.started += instance.OnAssassinate;
+            @Assassinate.performed += instance.OnAssassinate;
+            @Assassinate.canceled += instance.OnAssassinate;
         }
 
         /// <summary>
@@ -630,12 +706,21 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
-            @C.started -= instance.OnC;
-            @C.performed -= instance.OnC;
-            @C.canceled -= instance.OnC;
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @SelectUnarmed.started -= instance.OnSelectUnarmed;
+            @SelectUnarmed.performed -= instance.OnSelectUnarmed;
+            @SelectUnarmed.canceled -= instance.OnSelectUnarmed;
+            @SelectPistol.started -= instance.OnSelectPistol;
+            @SelectPistol.performed -= instance.OnSelectPistol;
+            @SelectPistol.canceled -= instance.OnSelectPistol;
+            @SelectRifle.started -= instance.OnSelectRifle;
+            @SelectRifle.performed -= instance.OnSelectRifle;
+            @SelectRifle.canceled -= instance.OnSelectRifle;
+            @Assassinate.started -= instance.OnAssassinate;
+            @Assassinate.performed -= instance.OnAssassinate;
+            @Assassinate.canceled -= instance.OnAssassinate;
         }
 
         /// <summary>
@@ -727,18 +812,39 @@ public partial class @Playercontrol: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnReload(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "C" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnC(InputAction.CallbackContext context);
-        /// <summary>
         /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPause(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectUnarmed" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectUnarmed(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectPistol" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectPistol(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectRifle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectRifle(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Assassinate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAssassinate(InputAction.CallbackContext context);
     }
 }

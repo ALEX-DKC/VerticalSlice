@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CrosshairUI : MonoBehaviour
 {
     public InputManager inputManager;
@@ -11,6 +12,8 @@ public class CrosshairUI : MonoBehaviour
     {
         if (inputManager == null || crosshair == null) return;
 
-        crosshair.SetActive(inputManager.IsAiming());
+        bool shouldShowCrosshair = inputManager.IsAiming() && !inputManager.IsUnarmedState();
+
+        crosshair.SetActive(shouldShowCrosshair);
     }
 }

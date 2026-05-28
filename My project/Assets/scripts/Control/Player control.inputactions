@@ -135,18 +135,45 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "C",
+                    "name": "Pause",
                     "type": "Button",
-                    "id": "b2e46316-5e56-4758-a844-98ddb85232e5",
+                    "id": "d5a16bc9-b098-4b73-81cf-c66c19178aaf",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pause",
+                    "name": "SelectUnarmed",
                     "type": "Button",
-                    "id": "d5a16bc9-b098-4b73-81cf-c66c19178aaf",
+                    "id": "d2438ef4-dfdc-4522-9d10-c30b80a923a0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectPistol",
+                    "type": "Button",
+                    "id": "8833ce54-1758-4d3e-ab19-c9e8081cf8a5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectRifle",
+                    "type": "Button",
+                    "id": "71ce42e5-876b-419f-a733-fbf733b80b69",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Assassinate",
+                    "type": "Button",
+                    "id": "fbc80827-4347-4d20-9002-aaea0ce1d30f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -200,34 +227,56 @@
                 },
                 {
                     "name": "",
-                    "id": "dcfb4a44-3e25-4b54-ac99-8a09b5d23ab6",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "C",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "565f667e-7dbd-499e-911f-dbca5ab304a9",
-                    "path": "<Keyboard>/c",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "C",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "200eb034-ad31-4462-bce7-bb2afb332c60",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "34c8abd0-6b18-4fc1-9ac1-7f6e845642b4",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectUnarmed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8cae7569-8d52-4115-9c09-b0174b021313",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectPistol",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e60b8dd-1293-4d28-84c9-fcf0971b0c4c",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectRifle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "90ff7731-6d84-40e8-8e5a-01ea2d903ca1",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Assassinate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

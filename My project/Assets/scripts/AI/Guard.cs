@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Guard : MonoBehaviour
 {
     [Header("Character Info")]
@@ -9,7 +11,7 @@ public class Guard : MonoBehaviour
     public float runningSpeed;
     private float CurrentmovingSpeed;
     public float turningSpeed = 300f;
-    private float characterHealth = 40f;
+    private float characterHealth = 100f;
     public float presentHealth;
 
     [Header("Destination Var")]
@@ -22,9 +24,11 @@ public class Guard : MonoBehaviour
     public GameObject playerBody;
     public LayerMask PlayerLayer;
     public float visionRadius;
+    public float visionAngle = 60f;
     public float shootingRadius;
     public bool playerInvisionRadius;
     public bool playerInshootingRadius;
+    public bool playerDetected = false;
 
     [Header("Guard Shooting Var")]
     public float giveDamageOf = 3f;
@@ -39,6 +43,7 @@ public class Guard : MonoBehaviour
     private Vector3 velocity;
 
     public bool isAlerted = false;
+    public bool isDead = false;
 
     void Start()
     {
@@ -51,31 +56,64 @@ public class Guard : MonoBehaviour
 
     void Update()
     {
-        playerInvisionRadius = Physics.CheckSphere(transform.position, visionRadius, PlayerLayer);
+        if (isDead) return;
+
+        playerInvisionRadius = CanSeePlayer();
         playerInshootingRadius = Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
+
+        if (playerInvisionRadius)
+        {
+            isAlerted = true;
+            playerDetected = true;
+        }
 
         if (!isAlerted)
         {
-            //walk
             Walk();
         }
-
-        if (isAlerted && playerInvisionRadius && !playerInshootingRadius)
+        else
         {
-            //chaseplayer
-            ChasePlayer();
+            if (playerInshootingRadius)
+            {
+                ShootPlayer();
+            }
+            else if (playerDetected)
+            {
+                ChasePlayer();
+            }
+        }
+    }
+
+    bool CanSeePlayer()
+    {
+        if (playerBody == null) return false;
+
+        Vector3 eyePosition = transform.position + Vector3.up * 1.5f;
+        Vector3 playerPosition = playerBody.transform.position + Vector3.up * 1.0f;
+
+        Vector3 directionToPlayer = playerPosition - eyePosition;
+        float distanceToPlayer = directionToPlayer.magnitude;
+
+        if (distanceToPlayer > visionRadius)
+            return false;
+
+        Vector3 flatDirectionToPlayer = directionToPlayer;
+        flatDirectionToPlayer.y = 0f;
+
+        float angle = Vector3.Angle(transform.forward, flatDirectionToPlayer);
+
+        if (angle > visionAngle * 0.5f)
+            return false;
+
+        if (Physics.Raycast(eyePosition, directionToPlayer.normalized, out RaycastHit hit, visionRadius))
+        {
+            if (hit.transform.CompareTag("Player"))
+            {
+                return true;
+            }
         }
 
-        if (isAlerted && playerInvisionRadius && playerInshootingRadius)
-        {
-            //shootplayer
-            ShootPlayer();
-        }
-
-        if (isAlerted)
-        {
-            visionRadius = 155f;
-        }
+        return false;
     }
 
     private void Walk()
@@ -120,7 +158,8 @@ public class Guard : MonoBehaviour
 
     void ChasePlayer()
     {
-        
+        CurrentmovingSpeed = runningSpeed;
+
         Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
         Vector3 moveVector = directionToPlayer * CurrentmovingSpeed * Time.deltaTime;
 
@@ -132,8 +171,6 @@ public class Guard : MonoBehaviour
         animator.SetBool("Run", true);
         animator.SetBool("Walk", false);
         animator.SetBool("Shoot", false);
-
-        CurrentmovingSpeed = runningSpeed;
     }
 
     void ShootPlayer()
@@ -153,7 +190,18 @@ public class Guard : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ShootingRaycastArea.transform.position, ShootingRaycastArea.transform.forward, out hit, shootingRange))
             {
-                Debug.Log("Guard Hit" + hit.transform.name);
+                Debug.Log("Guard Hit " + hit.transform.name);
+
+                PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
+                if (player == null)
+                {
+                    player = hit.transform.GetComponentInParent<PlayerMovement>();
+                }
+
+                if (player != null)
+                {
+                    player.characterHitDamage(giveDamageOf);
+                }
             }
 
             previouslyShoot = true;
@@ -161,12 +209,48 @@ public class Guard : MonoBehaviour
         }
     }
 
-     private void ActiveShooting()
+    private void ActiveShooting()
     {
         previouslyShoot = false;
     }
+
+    public void characterHitDamage(float takeDamage)
+    {
+        if (isDead) return;
+
+        Debug.Log("Guard took damage: " + takeDamage);
+
+        isAlerted = true;
+        playerDetected = true;
+        presentHealth -= takeDamage;
+
+        Debug.Log("Guard current health: " + presentHealth);
+
+        if (presentHealth <= 0)
+        {
+            presentHealth = 0;
+            isDead = true;
+
+            Debug.Log("Guard died");
+            animator.SetBool("Die", true);
+            characterDie();
+        }
+    }
+
+    void characterDie()
+    {
+        CurrentmovingSpeed = 0f;
+        shootingRange = 0f;
+        isAlerted = false;
+        playerDetected = false;
+
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+        }
+    }
+
     void FootStep()
     {
-    
     }
 }

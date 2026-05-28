@@ -26,9 +26,17 @@ public class InputManager : MonoBehaviour
     public bool shootInput;
     public bool scopeInput;          // 右键按住
     public bool reloadInput;         // R
-    public bool changeRifleInput;    // Tab
     public bool pauseInput;
     public bool canMove = true;
+
+    [Header("Assassination")]
+    public bool assassinateInput;    // F
+    public bool isUnarmedState = true;
+
+    [Header("Weapon Select")]
+    public bool unarmedInput;        // 1
+    public bool pistolInput;         // 2
+    public bool rifleInput;          // 3
 
     void Awake()
     {
@@ -52,14 +60,17 @@ public class InputManager : MonoBehaviour
             playercontrols.PlayerActions.Shift.canceled += ctx => shiftInput = false;
 
             playercontrols.PlayerActions.Shoot.performed += ctx => shootInput = true;
-            playercontrols.PlayerActions.Shoot.canceled += ctx => shootInput = false;
 
             playercontrols.PlayerActions.Scope.performed += ctx => scopeInput = true;
             playercontrols.PlayerActions.Scope.canceled += ctx => scopeInput = false;
 
             playercontrols.PlayerActions.Reload.performed += ctx => reloadInput = true;
 
-            playercontrols.PlayerActions.C.performed += ctx => changeRifleInput = true;
+            playercontrols.PlayerActions.SelectUnarmed.performed += ctx => unarmedInput = true;
+            playercontrols.PlayerActions.SelectPistol.performed += ctx => pistolInput = true;
+            playercontrols.PlayerActions.SelectRifle.performed += ctx => rifleInput = true;
+
+            playercontrols.PlayerActions.Assassinate.performed += ctx => assassinateInput = true;
 
             playercontrols.PlayerActions.Pause.performed += ctx => pauseInput = true;
         }
@@ -76,7 +87,12 @@ public class InputManager : MonoBehaviour
     {
         HandleMovementInput();
         HandleSprintingInput();
-        animatorManager.UpdateAnimValues(horizontalInput, verticalInput, playerMovement.isRunning);
+
+        if (animatorManager != null && playerMovement != null)
+        {
+            animatorManager.UpdateAnimValues(horizontalInput, verticalInput, playerMovement.isRunning);
+        }
+
         HandlePauseInput();
     }
 
@@ -101,6 +117,8 @@ public class InputManager : MonoBehaviour
 
     private void HandleSprintingInput()
     {
+        if (playerMovement == null) return;
+
         if (canMove && shiftInput && moveAmount > 0.5f)
         {
             playerMovement.isRunning = true;
@@ -131,16 +149,6 @@ public class InputManager : MonoBehaviour
         return scopeInput;
     }
 
-    public bool IsChangeWeaponPressed()
-    {
-        return changeRifleInput;
-    }
-
-    public void ResetChangeWeaponInput()
-    {
-        changeRifleInput = false;
-    }
-
     public void ResetAimInput()
     {
         scopeInput = false;
@@ -156,8 +164,70 @@ public class InputManager : MonoBehaviour
         reloadInput = false;
     }
 
+    public bool IsShootPressed()
+    {
+        return shootInput;
+    }
+
+    public void ResetShootInput()
+    {
+        shootInput = false;
+    }
+
+    public bool IsUnarmedPressed()
+    {
+        return unarmedInput;
+    }
+
+    public bool IsPistolPressed()
+    {
+        return pistolInput;
+    }
+
+    public bool IsRiflePressed()
+    {
+        return rifleInput;
+    }
+
+    public void ResetUnarmedInput()
+    {
+        unarmedInput = false;
+    }
+
+    public void ResetPistolInput()
+    {
+        pistolInput = false;
+    }
+
+    public void ResetRifleInput()
+    {
+        rifleInput = false;
+    }
+
     public bool HasMovementInput()
     {
         return Mathf.Abs(movenmentInput.x) > 0.1f || Mathf.Abs(movenmentInput.y) > 0.1f;
+    }
+
+    // ===== Assassination Methods =====
+
+    public bool IsAssassinatePressed()
+    {
+        return assassinateInput;
+    }
+
+    public void ResetAssassinateInput()
+    {
+        assassinateInput = false;
+    }
+
+    public void SetUnarmedState(bool value)
+    {
+        isUnarmedState = value;
+    }
+
+    public bool IsUnarmedState()
+    {
+        return isUnarmedState;
     }
 }

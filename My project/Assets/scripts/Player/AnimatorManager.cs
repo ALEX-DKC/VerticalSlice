@@ -10,20 +10,37 @@ public class AnimatorManager : MonoBehaviour
     private int horizontal;
     private int vertical;
     private int isAiming;
+    private int rifleAiming;
     private int moveAmount;
     private int reload;
+    private int rifleReload;
+    private int shootTrigger;
+    private int rifleTrigger;
+
+    // NEW: assassination trigger
+    private int assassinate;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
+
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
-        isAiming = Animator.StringToHash("isAiming");
         moveAmount = Animator.StringToHash("moveAmount");
+
+        isAiming = Animator.StringToHash("isAiming");
+        rifleAiming = Animator.StringToHash("rifleAiming");
+
+        shootTrigger = Animator.StringToHash("ShootTrigger");
+        rifleTrigger = Animator.StringToHash("RifleTrigger");
+
         reload = Animator.StringToHash("Reload");
+        rifleReload = Animator.StringToHash("rifleReload");
+
+        // NEW
+        assassinate = Animator.StringToHash("Assassinate");
     }
 
-    
     public void UpdateAnimValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         float snappedHorizontal;
@@ -69,11 +86,34 @@ public class AnimatorManager : MonoBehaviour
         animator.SetBool(isAiming, value);
     }
 
+    public void SetRifleAiming(bool value)
+    {
+        animator.SetBool(rifleAiming, value);
+    }
+
+    public void TriggerShoot()
+    {
+        animator.SetTrigger(shootTrigger);
+    }
+
+    public void TriggerRifleShoot()
+    {
+        animator.SetTrigger(rifleTrigger);
+    }
+
     public void TriggerReload()
     {
-        
         animator.SetTrigger(reload);
     }
 
-    
+    public void TriggerRifleReload()
+    {
+        animator.SetTrigger(rifleReload);
+    }
+
+    // NEW: call this when player presses F
+    public void TriggerAssassinate()
+    {
+        animator.SetTrigger(assassinate);
+    }
 }
