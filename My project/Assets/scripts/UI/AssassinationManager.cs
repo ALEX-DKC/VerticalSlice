@@ -17,13 +17,14 @@ public class AssassinationManager : MonoBehaviour
 
     [Header("Debug")]
     public bool debugIsUnarmed;
-    public bool debugFoundGuard;
+    public bool debugFoundTarget;
     public bool debugIsBehind;
     public bool debugCanAssassinate;
     public string debugTargetName;
 
     private Guard currentGuard;
     private Guard123 currentGuard123;
+    private Boss currentBoss;
 
     private bool isAssassinating = false;
 
@@ -92,8 +93,9 @@ public class AssassinationManager : MonoBehaviour
     {
         currentGuard = null;
         currentGuard123 = null;
+        currentBoss = null;
 
-        debugFoundGuard = false;
+        debugFoundTarget = false;
         debugIsBehind = false;
         debugTargetName = "None";
 
@@ -110,10 +112,10 @@ public class AssassinationManager : MonoBehaviour
 
             if (guard != null)
             {
-                debugFoundGuard = true;
+                debugFoundTarget = true;
                 debugTargetName = guard.gameObject.name;
 
-                bool behind = IsBehindGuard(guard.transform);
+                bool behind = IsBehindTarget(guard.transform);
                 debugIsBehind = behind;
 
                 if (!guard.isDead && behind)
@@ -127,15 +129,32 @@ public class AssassinationManager : MonoBehaviour
 
             if (guard123 != null)
             {
-                debugFoundGuard = true;
+                debugFoundTarget = true;
                 debugTargetName = guard123.gameObject.name;
 
-                bool behind = IsBehindGuard(guard123.transform);
+                bool behind = IsBehindTarget(guard123.transform);
                 debugIsBehind = behind;
 
                 if (!guard123.isDead && behind)
                 {
                     currentGuard123 = guard123;
+                    return;
+                }
+            }
+
+            Boss boss = hit.GetComponentInParent<Boss>();
+
+            if (boss != null)
+            {
+                debugFoundTarget = true;
+                debugTargetName = boss.gameObject.name;
+
+                bool behind = IsBehindTarget(boss.transform);
+                debugIsBehind = behind;
+
+                if (!boss.isDead && behind)
+                {
+                    currentBoss = boss;
                     return;
                 }
             }
@@ -154,22 +173,27 @@ public class AssassinationManager : MonoBehaviour
             return true;
         }
 
+        if (currentBoss != null && !currentBoss.isDead)
+        {
+            return true;
+        }
+
         return false;
     }
 
-    bool IsBehindGuard(Transform guardTransform)
+    bool IsBehindTarget(Transform targetTransform)
     {
-        Vector3 guardToPlayer = transform.position - guardTransform.position;
-        guardToPlayer.y = 0f;
+        Vector3 targetToPlayer = transform.position - targetTransform.position;
+        targetToPlayer.y = 0f;
 
-        if (guardToPlayer.magnitude < 0.01f)
+        if (targetToPlayer.magnitude < 0.01f)
         {
             return false;
         }
 
-        guardToPlayer.Normalize();
+        targetToPlayer.Normalize();
 
-        float dot = Vector3.Dot(guardTransform.forward, guardToPlayer);
+        float dot = Vector3.Dot(targetTransform.forward, targetToPlayer);
 
         return dot < behindDotThreshold;
     }
@@ -210,8 +234,14 @@ public class AssassinationManager : MonoBehaviour
             currentGuard123.characterHitDamage(assassinateDamage);
         }
 
+        if (currentBoss != null && !currentBoss.isDead)
+        {
+            currentBoss.characterHitDamage(assassinateDamage);
+        }
+
         currentGuard = null;
         currentGuard123 = null;
+        currentBoss = null;
 
         yield return new WaitForSeconds(0.3f);
 

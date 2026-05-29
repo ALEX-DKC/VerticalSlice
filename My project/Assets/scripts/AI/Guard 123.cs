@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
- class Guard123 : MonoBehaviour
+ public class Guard123 : MonoBehaviour
 {
     [Header("Character Info")]
     public float movingSpeed;
@@ -33,7 +33,7 @@ using UnityEngine;
     public float giveDamageOf = 3f;
     public float shootingRange = 100f;
     public GameObject ShootingRaycastArea;
-    public float timebtwShoot;
+    public float timebtwShoot = 1.5f;
     bool previouslyShoot;
 
     [Header("Character Controller and Gravity")]
@@ -43,28 +43,48 @@ using UnityEngine;
 
     [Header("State")]
     public bool isAlerted = false;
-
-    // IMPORTANT: public, so AssassinationManager can check it
     public bool isDead = false;
 
     void Start()
     {
         CurrentmovingSpeed = movingSpeed;
         presentHealth = characterHealth;
+
         playerBody = GameObject.Find("Player");
-        characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+
+        if (characterController == null)
+        {
+            characterController = GetComponent<CharacterController>();
+        }
+
+        // 重点改动：Animator 可以在子物体上
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
+        if (characterController == null)
+        {
+            Debug.LogWarning("Guard123: No CharacterController found on " + gameObject.name);
+        }
+
+        if (animator == null)
+        {
+            Debug.LogWarning("Guard123: No Animator found on " + gameObject.name);
+        }
     }
 
     void Update()
     {
         if (isDead)
         {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
-            animator.SetBool("Shoot", false);
+            SetAnimatorBool("Walk", false);
+            SetAnimatorBool("Run", false);
+            SetAnimatorBool("Shoot", false);
             return;
         }
+
+        ApplyGravity();
 
         playerInvisionRadius = CanSeePlayer();
         playerInshootingRadius = Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
@@ -92,6 +112,14 @@ using UnityEngine;
         }
     }
 
+    void SetAnimatorBool(string parameterName, bool value)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(parameterName, value);
+        }
+    }
+
     bool CanSeePlayer()
     {
         if (isDead) return false;
@@ -104,7 +132,9 @@ using UnityEngine;
         float distanceToPlayer = directionToPlayer.magnitude;
 
         if (distanceToPlayer > visionRadius)
+        {
             return false;
+        }
 
         Vector3 flatDirectionToPlayer = directionToPlayer;
         flatDirectionToPlayer.y = 0f;
@@ -112,7 +142,9 @@ using UnityEngine;
         float angle = Vector3.Angle(transform.forward, flatDirectionToPlayer);
 
         if (angle > visionAngle * 0.5f)
+        {
             return false;
+        }
 
         if (Physics.Raycast(eyePosition, directionToPlayer.normalized, out RaycastHit hit, visionRadius))
         {
@@ -128,6 +160,7 @@ using UnityEngine;
     private void Walk()
     {
         if (isDead) return;
+        if (characterController == null) return;
         if (waypoints == null || waypoints.Count == 0) return;
 
         Transform targetWaypoint = waypoints[currentWaypointIndex];
@@ -154,9 +187,9 @@ using UnityEngine;
             }
         }
 
-        animator.SetBool("Run", false);
-        animator.SetBool("Walk", true);
-        animator.SetBool("Shoot", false);
+        SetAnimatorBool("Run", false);
+        SetAnimatorBool("Walk", true);
+        SetAnimatorBool("Shoot", false);
 
         if (distanceToWaypoint < 0.2f)
         {
@@ -173,11 +206,18 @@ using UnityEngine;
     {
         if (isDead) return;
         if (playerBody == null) return;
+        if (characterController == null) return;
 
         CurrentmovingSpeed = runningSpeed;
 
         Vector3 directionToPlayer = playerBody.transform.position - transform.position;
         directionToPlayer.y = 0f;
+
+        if (directionToPlayer.magnitude < 0.01f)
+        {
+            return;
+        }
+
         directionToPlayer.Normalize();
 
         Vector3 moveVector = directionToPlayer * CurrentmovingSpeed * Time.deltaTime;
@@ -194,9 +234,9 @@ using UnityEngine;
             );
         }
 
-        animator.SetBool("Run", true);
-        animator.SetBool("Walk", false);
-        animator.SetBool("Shoot", false);
+        SetAnimatorBool("Run", true);
+        SetAnimatorBool("Walk", false);
+        SetAnimatorBool("Shoot", false);
     }
 
     void ShootPlayer()
@@ -209,22 +249,26 @@ using UnityEngine;
 
         Vector3 directionToPlayer = playerBody.transform.position - transform.position;
         directionToPlayer.y = 0f;
-        directionToPlayer.Normalize();
 
-        Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
-
-        if (lookDirection != Vector3.zero)
+        if (directionToPlayer.magnitude > 0.01f)
         {
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                Quaternion.LookRotation(lookDirection),
-                Time.deltaTime * turningSpeed
-            );
+            directionToPlayer.Normalize();
+
+            Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
+
+            if (lookDirection != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    Quaternion.LookRotation(lookDirection),
+                    Time.deltaTime * turningSpeed
+                );
+            }
         }
 
-        animator.SetBool("Run", false);
-        animator.SetBool("Walk", false);
-        animator.SetBool("Shoot", true);
+        SetAnimatorBool("Run", false);
+        SetAnimatorBool("Walk", false);
+        SetAnimatorBool("Shoot", true);
 
         if (!previouslyShoot)
         {
@@ -280,10 +324,10 @@ using UnityEngine;
 
             Debug.Log("Guard died");
 
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
-            animator.SetBool("Shoot", false);
-            animator.SetBool("Die", true);
+            SetAnimatorBool("Walk", false);
+            SetAnimatorBool("Run", false);
+            SetAnimatorBool("Shoot", false);
+            SetAnimatorBool("Die", true);
 
             characterDie();
         }
@@ -308,6 +352,20 @@ using UnityEngine;
         {
             characterController.enabled = false;
         }
+    }
+
+    void ApplyGravity()
+    {
+        if (characterController == null) return;
+        if (!characterController.enabled) return;
+
+        if (characterController.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+
+        velocity.y -= gravity * Time.deltaTime;
+        characterController.Move(velocity * Time.deltaTime);
     }
 
     void FootStep()
