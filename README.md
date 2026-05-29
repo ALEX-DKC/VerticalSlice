@@ -101,7 +101,21 @@ You can also test the weapon system. The player can switch between unarmed, pist
 
 
 ## Milestone 3 Devlog
-Milestone 3 Devlog goes here.
+### 1
+For my Vertical Slice project, I made a ShaderGraph called SG_Damage, and the material is Mat_DamageVignette
+This shader is used as a full-screen post-processing effect. It appears when the player takes damage. 
+The shader starts by using the Screen Position node. I split the screen position into X and Y values, then combine them into a Vector2. I compare this screen position to the center of the screen using a Distance node. This lets the shader know how far each pixel is from the center. Then I use a Smoothstep node with the Radius and Softness values. This creates a soft circle mask. The center of the screen stays mostly clear, while the edges of the screen become affected more strongly. I also use a URP Sample Buffer node with BlitSource. This is the original camera image. Then I use a Lerp node to blend between the original screen image and Red color. The Intensity value controls how strong the red damage effect is.
+
+In gameplay, when the player is hit, a script increases and decrease the shader’s Intensity value. This makes the screen briefly flash red around the edges, so the player clearly understands that they took damage.
+
+### 2
+Based on feedback from the last playtest, I improved the player death and ending states. During the playtest, testers noticed that the player could still move after dead. To fix this, I added a Game Over system: when the player dead, player input is disabled, the game pauses, the screen becomes gray, and a “YOU DIED” message appears , and a Restart Game button appear. I also added a mission completion ending. After the player defeats the boss and reaches the exit room, input is disabled again, the screen gray, and a MISSION COMPLETE message appears. 
+
+### 3
+Since the last milestone, I finished designing the boss and placed the guards around the map. The boss normally patrols like other enemies, but once the player attacks it or he find the player, it becomes alerted and starts chasing the player in a faster speed. The boss when it gets close to the player, it punches the player in high damage. If the player runs away, the boss continues chasing. I also arranged the guard patrol routes in the level, so the player has to observe enemy movement, avoid detection, and plan a assassination route. This makes the gameplay loop clearer which is explore the level, avoid or kill guards, defeat the boss, and then escape to complete the mission.
+
+
+
 ## Milestone 4 Devlog
 Milestone 4 Devlog goes here.
 ## Final Devlog
