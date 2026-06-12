@@ -3651,6 +3651,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 9
   presentHealth: 9
   animator: {fileID: 45882208}
   waypoints: []
@@ -11256,6 +11257,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 6
   presentHealth: 6
   animator: {fileID: 167205450}
   waypoints:
@@ -31784,7 +31786,7 @@ MonoBehaviour:
   movingSpeed: 2
   runningSpeed: 3.5
   turningSpeed: 300
-  characterHealth: 100
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 456583490}
   waypoints: []
@@ -37616,6 +37618,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 9
   presentHealth: 9
   animator: {fileID: 561688306}
   waypoints: []
@@ -42582,6 +42585,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 6
   presentHealth: 6
   animator: {fileID: 617305115}
   waypoints:
@@ -69702,7 +69706,7 @@ MonoBehaviour:
   movingSpeed: 2
   runningSpeed: 3.5
   turningSpeed: 300
-  characterHealth: 100
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 975385498}
   waypoints: []
@@ -77651,7 +77655,7 @@ MonoBehaviour:
   movingSpeed: 2
   runningSpeed: 3.5
   turningSpeed: 300
-  characterHealth: 100
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 1079904255}
   waypoints: []
@@ -78234,6 +78238,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 9
   presentHealth: 9
   animator: {fileID: 1090279917}
   waypoints: []
@@ -90640,6 +90645,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 1250575643}
   waypoints: []
@@ -94501,6 +94507,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 6
   presentHealth: 6
   animator: {fileID: 1304760649}
   waypoints: []
@@ -109534,6 +109541,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 6
   presentHealth: 6
   animator: {fileID: 1515365368}
   waypoints: []
@@ -127737,7 +127745,7 @@ MonoBehaviour:
   movingSpeed: 2
   runningSpeed: 3.5
   turningSpeed: 300
-  characterHealth: 100
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 1731673252}
   waypoints: []
@@ -128749,7 +128757,7 @@ MonoBehaviour:
   movingSpeed: 1.5
   runningSpeed: 3
   turningSpeed: 10
-  characterHealth: 300
+  maxHealth: 20
   presentHealth: 20
   animator: {fileID: 1749820373}
   waypoints:
@@ -135399,6 +135407,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 9
   presentHealth: 9
   animator: {fileID: 1820114610}
   waypoints:
@@ -142494,7 +142503,7 @@ MonoBehaviour:
   movingSpeed: 2
   runningSpeed: 3.5
   turningSpeed: 300
-  characterHealth: 100
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 1908426699}
   waypoints: []
@@ -148251,6 +148260,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 9
   presentHealth: 9
   animator: {fileID: 1988641282}
   waypoints: []
@@ -149572,6 +149582,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 9
   presentHealth: 9
   animator: {fileID: 2007465717}
   waypoints:
@@ -151037,6 +151048,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 2026993104}
   waypoints: []
@@ -153858,7 +153870,7 @@ MonoBehaviour:
   movingSpeed: 2
   runningSpeed: 3.5
   turningSpeed: 300
-  characterHealth: 100
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 2081896089}
   waypoints: []
@@ -158400,6 +158412,7 @@ MonoBehaviour:
   movingSpeed: 0
   runningSpeed: 0
   turningSpeed: 5
+  maxHealth: 3
   presentHealth: 3
   animator: {fileID: 377359119999866265}
   waypoints:
