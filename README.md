@@ -1,3 +1,4 @@
+<img width="771" height="606" alt="截屏2026-06-11 下午8 57 23" src="https://github.com/user-attachments/assets/b931d575-369b-48b4-bec6-b1c576efbb9b" />
 # GDIM33 Vertical Slice
 ## Milestone 1 Devlog
 
@@ -123,7 +124,7 @@ This content connects closely to my original plan. My original idea was a space 
 
 ### 2
 C#: Assets/scripts/Player/ PlayerMovement.cs & Assets/shader/ DamagePostEffectController.cs
-
+<img width="771" height="606" alt="截屏2026-06-11 下午8 57 23" src="https://github.com/user-attachments/assets/19d358fc-db6e-472f-b323-2d1d7d4664da" />
 My rendering effect is a damage post-processing effect that appears when the player is hit. The relevant C# files are PlayerMovement.cs and DamagePostEffectController.cs. In PlayerMovement.cs, the function characterHitDamage(float takeDamage) is called when the player receives damage from an enemy. Inside this function, the player’s current health is reduced, and then the script calls damagePostEffectController.TriggerDamageEffect(). This connects the gameplay event of taking damage to the visual feedback on screen.
 
 The rendering effect uses a fullscreen damage vignette Shader Graph. The shader is assigned to a material, Mat_DamageVignette, and used through a URP Full Screen Pass Renderer Feature. The shader samples the camera color buffer and blends the original screen color with a red damage color near the edges of the screen. The strength of the effect is controlled by an intensity value. When the player is hit, DamagePostEffectController.cs increases the intensity, and then gradually fades it back down over time. 
