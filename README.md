@@ -115,10 +115,31 @@ Based on feedback from the last playtest, I improved the player death and ending
 Since the last milestone, I finished designing the boss and placed the guards around the map. The boss normally patrols like other enemies, but once the player attacks it or he find the player, it becomes alerted and starts chasing the player in a faster speed. The boss when it gets close to the player, it punches the player in high damage. If the player runs away, the boss continues chasing. I also arranged the guard patrol routes in the level, so the player has to observe enemy movement, avoid detection, and plan a assassination route. This makes the gameplay loop clearer which is explore the level, avoid or kill guards, defeat the boss, and then escape to complete the mission.
 
 
-
-## Milestone 4 Devlog
-Milestone 4 Devlog goes here.
 ## Final Devlog
-Final Devlog goes here.
+### 1
+The core gameplay loop of my game is to explore the space fortress, observe enemy patrols, choose a safe route, fight or avoid guards, kill the main target, and escape. In the current Vertical Slice, the player can move through 3 levels, switch between unarmed, pistol, and rifle states, perform stealth assassination. The game also includes several enemy types: normal guards, rifle guards, melee guards, and final boss. The player must manage health, weapon and positioning in the mission.
+
+This content connects closely to my original plan. My original idea was a space gunfight & assassination game where a rebel enters a noble corporate fortress to kill a powerful CEO. The Vertical Slice does not include every future feature, such as disguises, a more advanced suspicion meter. My Vertical Slice is an early level of the game. It demonstrates the core gameplay loop: which are sneaking into a hostile area, reading enemy behavior, choosing between stealth and direct combat, and escaping after killing the target. The carefully arranged guard patrol positions, boss behavior design, multiple weapon choices, assassination system, HUD, sound effects, mission flow, and space-themed level design all help communicate what the full game would feel like.
+
+### 2
+C#: assests/scripts/ PlayerMovement.cs & DamagePostEffectController.cs
+My rendering effect is a damage post-processing effect that appears when the player is hit. The relevant C# files are PlayerMovement.cs and DamagePostEffectController.cs. In PlayerMovement.cs, the function characterHitDamage(float takeDamage) is called when the player receives damage from an enemy. Inside this function, the player’s current health is reduced, and then the script calls damagePostEffectController.TriggerDamageEffect(). This connects the gameplay event of taking damage to the visual feedback on screen.
+
+The rendering effect uses a fullscreen damage vignette Shader Graph. The shader is assigned to a material, Mat_DamageVignette, and used through a URP Full Screen Pass Renderer Feature. The shader samples the camera color buffer and blends the original screen color with a red damage color near the edges of the screen. The strength of the effect is controlled by an intensity value. When the player is hit, DamagePostEffectController.cs increases the intensity, and then gradually fades it back down over time. 
+
+### 3
+For my planning process, I did use bubble diagram and breakdowns and task step breakdowns. First, I made a mood board to decide the visual style, atmosphere, and inspiration for the game, which is relate to cyberpunk, space, high-tech interior. Then, I made a pitch that listed the main mechanics, theme, technical systems, and story/background of the game.
+After that, I used a bubble diagram to break the game into main objects and systems, such as the player, guards, boss, weapons, assassination system, health system... I used lines to show how these systems connect. After making the diagram, I broke the project into smaller tasks or function. Then, each function was divided into smaller steps. For example, for the health HUD, I first created the UI images, place it on the screen, and then connected them to the player health value through c# script. Then, I tested damage, and finally fixed problems. This process made the project easier to build because I knew what to work on first and next, and how each part connected to the whole game.
+
+At first, a game idea can sound very complex, and I do not know where to start. However, when I draw diagrams and break the game into smaller systems, I can see how many small parts are actually needed. During the project, I tried to complete one or two systems each week. By following this plan step by step, I was able to slowly build the whole Vertical Slice.
+
+This method also helped me understand the scope of the project. It helped me focus on the core gameplay loop and decide what was necessary for the Vertical Slice and what should be cut or saved for future development. For example, I originally thought about adding a disguise system and a more advanced alert system. However, after breaking down the project, I realized those features were too large for the current scope. I should focuse on the core experience and unique features of my game, which is different weapon choices, different enemy behaviors, and assassinate route design. These systems allow the player to understand the main fun of the game from the Vertical Slice.
+
+This planning process relates directly to how I created my Vertical Slice. Some parts went well because I separated them into clear systems. For example, after I built the health HUD, I could test it directly. If I found a problem, such as the health not decreasing correctly, I could look at the health script the change instead of searching randomly through all of the code and settings. This helped me find and fix problems more easily
+
+However, some parts also showed me that I should plan more carefully next time. Especially the animation system, before this project, I had not made animation logic this complicated. I had to connect animation states with C# scripts and Visual Scripting, which became very complex. Because I did not break down the animation steps clearly enough at the beginning, I did not set up all the needed parameters and variables in advance. This caused many errors, and I had to repeatedly change the code, Visual Script graphs, and Animator settings. From this experience, I learned that for complex systems, I should first list all required animation states, parameters, transitions, scripts, and triggers before building the system. In the future, I will make a more detailed task breakdown for animation, and set all the variable at first, which can make my mind clear, and easy for testing and fixing bugs.
+
+
+
 ## Open-source assets
 - Cite any external assets used here!
