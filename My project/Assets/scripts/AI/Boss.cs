@@ -9,7 +9,8 @@ public class Boss : MonoBehaviour
     public float runningSpeed = 8f;
     public float turningSpeed = 300f;
 
-    public float characterHealth = 300f;
+    [Header("Health")]
+    public float maxHealth = 300f;
     public float presentHealth;
 
     [Header("Destination Var")]
@@ -44,7 +45,8 @@ public class Boss : MonoBehaviour
 
     void Start()
     {
-        presentHealth = characterHealth;
+        // 游戏开始时，当前血量 = 最大血量
+        presentHealth = maxHealth;
 
         playerBody = GameObject.Find("Player");
 
@@ -219,7 +221,6 @@ public class Boss : MonoBehaviour
 
         if (!alreadyAttacked)
         {
-            // Boss 出拳音效
             if (SoundManager.instance != null)
             {
                 SoundManager.instance.PlayBossPunch();
@@ -255,41 +256,52 @@ public class Boss : MonoBehaviour
             return;
         }
 
-        // Boss 被打音效
-        if (SoundManager.instance != null)
-        {
-            SoundManager.instance.PlayBossHit();
-        }
-
         Debug.Log("Boss took damage: " + takeDamage);
 
         isAlerted = true;
         playerDetected = true;
 
         presentHealth -= takeDamage;
+        presentHealth = Mathf.Clamp(presentHealth, 0f, maxHealth);
 
         Debug.Log("Boss current health: " + presentHealth);
 
         if (presentHealth <= 0)
         {
-            presentHealth = 0;
-            isDead = true;
-
-            // Boss 死亡音效
+            BossDie();
+        }
+        else
+        {
             if (SoundManager.instance != null)
             {
-                SoundManager.instance.PlayBossDeath();
+                SoundManager.instance.PlayBossHit();
             }
-
-            Debug.Log("Boss died");
-
-            SetAnimatorBool("Walk", false);
-            SetAnimatorBool("Run", false);
-            SetAnimatorBool("Attack", false);
-            SetAnimatorBool("Die", true);
-
-            characterDie();
         }
+    }
+
+    void BossDie()
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        isDead = true;
+        presentHealth = 0f;
+
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayBossDeath();
+        }
+
+        Debug.Log("Boss died");
+
+        SetAnimatorBool("Walk", false);
+        SetAnimatorBool("Run", false);
+        SetAnimatorBool("Attack", false);
+        SetAnimatorBool("Die", true);
+
+        characterDie();
     }
 
     void characterDie()

@@ -10,7 +10,7 @@ public class MeleeGuard : MonoBehaviour
     public float turningSpeed = 30f;
 
     [Header("Health")]
-    public float characterHealth = 100f;
+    public float maxHealth = 100f;
     public float presentHealth;
 
     [Header("Destination Var")]
@@ -45,7 +45,8 @@ public class MeleeGuard : MonoBehaviour
 
     void Start()
     {
-        presentHealth = characterHealth;
+        // 游戏开始时：当前血量 = 最大血量
+        presentHealth = maxHealth;
 
         playerBody = GameObject.Find("Player");
 
@@ -102,6 +103,8 @@ public class MeleeGuard : MonoBehaviour
 
     bool CanSeePlayer()
     {
+        if (isDead) return false;
+
         if (playerBody == null)
         {
             return false;
@@ -284,29 +287,40 @@ public class MeleeGuard : MonoBehaviour
         playerDetected = true;
 
         presentHealth -= takeDamage;
+        presentHealth = Mathf.Clamp(presentHealth, 0f, maxHealth);
 
         Debug.Log("MeleeGuard current health: " + presentHealth);
 
         if (presentHealth <= 0)
         {
-            presentHealth = 0;
-            isDead = true;
-
-            PlayGuardDeathSound();
-
-            Debug.Log("MeleeGuard died");
-
-            SetAnimatorBool("Walk", false);
-            SetAnimatorBool("Run", false);
-            SetAnimatorBool("Attack", false);
-            SetAnimatorBool("Die", true);
-
-            characterDie();
+            MeleeGuardDie();
         }
         else
         {
             PlayGuardHitSound();
         }
+    }
+
+    void MeleeGuardDie()
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        isDead = true;
+        presentHealth = 0f;
+
+        PlayGuardDeathSound();
+
+        Debug.Log("MeleeGuard died");
+
+        SetAnimatorBool("Walk", false);
+        SetAnimatorBool("Run", false);
+        SetAnimatorBool("Attack", false);
+        SetAnimatorBool("Die", true);
+
+        characterDie();
     }
 
     void characterDie()

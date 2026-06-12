@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class InputManager : MonoBehaviour
 {
     private Playercontrol playercontrols;
@@ -24,19 +25,23 @@ public class InputManager : MonoBehaviour
     [Header("Input Button Flag")]
     public bool shiftInput;
     public bool shootInput;
-    public bool scopeInput;          // 右键按住
-    public bool reloadInput;         // R
+    public bool scopeInput;
+    public bool reloadInput;
     public bool pauseInput;
     public bool canMove = true;
 
+    [Header("Reload Cooldown")]
+    public float reloadInputCooldown = 2f;
+    private float nextReloadInputTime = 0f;
+
     [Header("Assassination")]
-    public bool assassinateInput;    // F
+    public bool assassinateInput;
     public bool isUnarmedState = true;
 
     [Header("Weapon Select")]
-    public bool unarmedInput;        // 1
-    public bool pistolInput;         // 2
-    public bool rifleInput;          // 3
+    public bool unarmedInput;
+    public bool pistolInput;
+    public bool rifleInput;
 
     void Awake()
     {
@@ -64,11 +69,38 @@ public class InputManager : MonoBehaviour
             playercontrols.PlayerActions.Scope.performed += ctx => scopeInput = true;
             playercontrols.PlayerActions.Scope.canceled += ctx => scopeInput = false;
 
-            playercontrols.PlayerActions.Reload.performed += ctx => reloadInput = true;
+            playercontrols.PlayerActions.Reload.performed += ctx =>
+            {
+                if (Time.time >= nextReloadInputTime)
+                {
+                    reloadInput = true;
+                    nextReloadInputTime = Time.time + reloadInputCooldown;
+                    Debug.Log("Reload input accepted.");
+                }
+                else
+                {
+                    reloadInput = false;
+                    Debug.Log("Reload input ignored because it is on cooldown.");
+                }
+            };
 
-            playercontrols.PlayerActions.SelectUnarmed.performed += ctx => unarmedInput = true;
-            playercontrols.PlayerActions.SelectPistol.performed += ctx => pistolInput = true;
-            playercontrols.PlayerActions.SelectRifle.performed += ctx => rifleInput = true;
+            playercontrols.PlayerActions.SelectUnarmed.performed += ctx =>
+            {
+                unarmedInput = true;
+                ClearShootInput();
+            };
+
+            playercontrols.PlayerActions.SelectPistol.performed += ctx =>
+            {
+                pistolInput = true;
+                ClearShootInput();
+            };
+
+            playercontrols.PlayerActions.SelectRifle.performed += ctx =>
+            {
+                rifleInput = true;
+                ClearShootInput();
+            };
 
             playercontrols.PlayerActions.Assassinate.performed += ctx => assassinateInput = true;
 
@@ -137,7 +169,10 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    // ===== 给 Visual Scripting 用的方法 =====
+    private void ClearShootInput()
+    {
+        shootInput = false;
+    }
 
     public void SetCanMove(bool value)
     {
@@ -166,7 +201,18 @@ public class InputManager : MonoBehaviour
 
     public bool IsShootPressed()
     {
-        return shootInput;
+        if (!shootInput)
+        {
+            return false;
+        }
+
+        if (!scopeInput)
+        {
+            shootInput = false;
+            return false;
+        }
+
+        return true;
     }
 
     public void ResetShootInput()
@@ -192,24 +238,25 @@ public class InputManager : MonoBehaviour
     public void ResetUnarmedInput()
     {
         unarmedInput = false;
+        ClearShootInput();
     }
 
     public void ResetPistolInput()
     {
         pistolInput = false;
+        ClearShootInput();
     }
 
     public void ResetRifleInput()
     {
         rifleInput = false;
+        ClearShootInput();
     }
 
     public bool HasMovementInput()
     {
         return Mathf.Abs(movenmentInput.x) > 0.1f || Mathf.Abs(movenmentInput.y) > 0.1f;
     }
-
-    // ===== Assassination Methods =====
 
     public bool IsAssassinatePressed()
     {

@@ -10,7 +10,9 @@ public class Guard : MonoBehaviour
     public float runningSpeed;
     private float CurrentmovingSpeed;
     public float turningSpeed = 300f;
-    private float characterHealth = 100f;
+
+    [Header("Health")]
+    public float maxHealth = 100f;
     public float presentHealth;
 
     [Header("Destination Var")]
@@ -48,7 +50,9 @@ public class Guard : MonoBehaviour
     void Start()
     {
         CurrentmovingSpeed = movingSpeed;
-        presentHealth = characterHealth;
+
+        // 游戏开始时：当前血量 = 最大血量
+        presentHealth = maxHealth;
 
         playerBody = GameObject.Find("Player");
 
@@ -365,30 +369,42 @@ public class Guard : MonoBehaviour
 
         isAlerted = true;
         playerDetected = true;
+
         presentHealth -= takeDamage;
+        presentHealth = Mathf.Clamp(presentHealth, 0f, maxHealth);
 
         Debug.Log("Guard current health: " + presentHealth);
 
         if (presentHealth <= 0)
         {
-            presentHealth = 0;
-            isDead = true;
-
-            PlayGuardDeathSound();
-
-            Debug.Log("Guard died");
-
-            SetAnimatorBool("Walk", false);
-            SetAnimatorBool("Run", false);
-            SetAnimatorBool("Shoot", false);
-            SetAnimatorBool("Die", true);
-
-            characterDie();
+            GuardDie();
         }
         else
         {
             PlayGuardHitSound();
         }
+    }
+
+    void GuardDie()
+    {
+        if (isDead)
+        {
+            return;
+        }
+
+        isDead = true;
+        presentHealth = 0f;
+
+        PlayGuardDeathSound();
+
+        Debug.Log("Guard died");
+
+        SetAnimatorBool("Walk", false);
+        SetAnimatorBool("Run", false);
+        SetAnimatorBool("Shoot", false);
+        SetAnimatorBool("Die", true);
+
+        characterDie();
     }
 
     void characterDie()
