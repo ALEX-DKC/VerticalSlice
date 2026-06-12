@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Boss : MonoBehaviour
 {
     [Header("Character Info")]
@@ -220,6 +219,12 @@ public class Boss : MonoBehaviour
 
         if (!alreadyAttacked)
         {
+            // Boss 出拳音效
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.PlayBossPunch();
+            }
+
             PlayerMovement player = playerBody.GetComponent<PlayerMovement>();
 
             if (player == null)
@@ -250,6 +255,12 @@ public class Boss : MonoBehaviour
             return;
         }
 
+        // Boss 被打音效
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayBossHit();
+        }
+
         Debug.Log("Boss took damage: " + takeDamage);
 
         isAlerted = true;
@@ -263,6 +274,12 @@ public class Boss : MonoBehaviour
         {
             presentHealth = 0;
             isDead = true;
+
+            // Boss 死亡音效
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.PlayBossDeath();
+            }
 
             Debug.Log("Boss died");
 
@@ -279,6 +296,7 @@ public class Boss : MonoBehaviour
     {
         isAlerted = false;
         playerDetected = false;
+        playerInVisionRadius = false;
 
         CancelInvoke(nameof(ResetAttack));
         alreadyAttacked = true;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 
- public class Guard123 : MonoBehaviour
+public class Guard123 : MonoBehaviour
 {
     [Header("Character Info")]
     public float movingSpeed;
@@ -57,7 +57,6 @@ using UnityEngine;
             characterController = GetComponent<CharacterController>();
         }
 
-        // 重点改动：Animator 可以在子物体上
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
@@ -272,6 +271,8 @@ using UnityEngine;
 
         if (!previouslyShoot)
         {
+            PlayEnemyShootSound();
+
             RaycastHit hit;
 
             if (Physics.Raycast(ShootingRaycastArea.transform.position, ShootingRaycastArea.transform.forward, out hit, shootingRange))
@@ -293,6 +294,42 @@ using UnityEngine;
 
             previouslyShoot = true;
             Invoke(nameof(ActiveShooting), timebtwShoot);
+        }
+    }
+
+    void PlayEnemyShootSound()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayEnemyRifleShoot();
+        }
+        else
+        {
+            Debug.LogWarning("Guard123: SoundManager instance is missing.");
+        }
+    }
+
+    void PlayGuardHitSound()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayGuardHit();
+        }
+        else
+        {
+            Debug.LogWarning("Guard123: SoundManager instance is missing.");
+        }
+    }
+
+    void PlayGuardDeathSound()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayGuardDeath();
+        }
+        else
+        {
+            Debug.LogWarning("Guard123: SoundManager instance is missing.");
         }
     }
 
@@ -322,6 +359,8 @@ using UnityEngine;
             presentHealth = 0;
             isDead = true;
 
+            PlayGuardDeathSound();
+
             Debug.Log("Guard died");
 
             SetAnimatorBool("Walk", false);
@@ -330,6 +369,10 @@ using UnityEngine;
             SetAnimatorBool("Die", true);
 
             characterDie();
+        }
+        else
+        {
+            PlayGuardHitSound();
         }
     }
 

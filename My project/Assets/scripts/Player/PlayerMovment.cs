@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
+
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Script Ref")]
@@ -19,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     public GameOverManager gameOverManager;
 
     [Header("Health")]
-    private float characterHealth = 10f;
+    public float characterHealth = 9f;
     public float presentHealth;
 
     [Header("Movement")]
@@ -40,7 +41,8 @@ public class PlayerMovement : MonoBehaviour
     public float gravity = -40f;
     public float fallSpeed = 4f;
 
-    private bool isDead = false;
+    [Header("State")]
+    public bool isDead = false;
 
     void Awake()
     {
@@ -51,9 +53,37 @@ public class PlayerMovement : MonoBehaviour
         presentHealth = characterHealth;
     }
 
+    void Update()
+    {
+        if (camObject != null)
+        {
+            Debug.DrawRay(camObject.position, camObject.forward * 100f, Color.red);
+        }
+
+        // 测试死亡：按 K 直接死亡
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            characterHitDamage(999f);
+        }
+
+        // 测试受伤：按 H 掉 1 格血
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            characterHitDamage(1f);
+        }
+    }
+
+    void FixedUpdate()
+    {
+        HandleAllMovement();
+    }
+
     public void HandleAllMovement()
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         HandleMovement();
 
@@ -69,14 +99,12 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity();
     }
 
-    void FixedUpdate()
-    {
-        HandleAllMovement();
-    }
-
     void HandleMovement()
     {
-        if (inputManager == null || camObject == null || playerRigidbody == null) return;
+        if (inputManager == null || camObject == null || playerRigidbody == null)
+        {
+            return;
+        }
 
         moveDirection = camObject.forward * inputManager.verticalInput;
         moveDirection = moveDirection + camObject.right * inputManager.horizontalInput;
@@ -99,7 +127,10 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleRotation()
     {
-        if (inputManager == null || camObject == null) return;
+        if (inputManager == null || camObject == null)
+        {
+            return;
+        }
 
         Vector3 targetDirection = Vector3.zero;
 
@@ -127,7 +158,10 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleAimingRotation()
     {
-        if (camObject == null) return;
+        if (camObject == null)
+        {
+            return;
+        }
 
         Vector3 targetDirection = camObject.forward;
         targetDirection.y = 0f;
@@ -151,7 +185,10 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyGravity()
     {
-        if (playerRigidbody == null) return;
+        if (playerRigidbody == null)
+        {
+            return;
+        }
 
         if (!isGrounded)
         {
@@ -173,10 +210,24 @@ public class PlayerMovement : MonoBehaviour
 
     public void characterHitDamage(float takeDamage)
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         presentHealth -= takeDamage;
+        presentHealth = Mathf.Clamp(presentHealth, 0f, characterHealth);
 
+        Debug.Log("Player took damage: " + takeDamage);
+        Debug.Log("Player current health: " + presentHealth);
+
+        // 玩家被打音效
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayPlayerHit();
+        }
+
+        // 玩家受伤屏幕特效
         if (damagePostEffectController != null)
         {
             damagePostEffectController.TriggerDamageEffect();
@@ -187,32 +238,18 @@ public class PlayerMovement : MonoBehaviour
             presentHealth = 0;
             isDead = true;
 
+            // 玩家死亡音效
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.PlayPlayerDeath();
+            }
+
             if (animator != null)
             {
                 animator.SetBool("Die", true);
             }
 
             characterDie();
-        }
-    }
-
-    void Update()
-    {
-        if (camObject != null)
-        {
-            Debug.DrawRay(camObject.position, camObject.forward * 100f, Color.red);
-        }
-
-        // Test death key
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            characterHitDamage(999f);
-        }
-
-        // Test damage post effect key
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            characterHitDamage(1f);
         }
     }
 

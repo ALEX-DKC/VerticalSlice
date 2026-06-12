@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
 public class Guard : MonoBehaviour
 {
     [Header("Character Info")]
@@ -34,7 +33,7 @@ public class Guard : MonoBehaviour
     public float giveDamageOf = 3f;
     public float shootingRange = 100f;
     public GameObject ShootingRaycastArea;
-    public float timebtwShoot;
+    public float timebtwShoot = 1.5f;
     bool previouslyShoot;
 
     [Header("Character Controller and Gravity")]
@@ -42,6 +41,7 @@ public class Guard : MonoBehaviour
     public float gravity = 9.81f;
     private Vector3 velocity;
 
+    [Header("State")]
     public bool isAlerted = false;
     public bool isDead = false;
 
@@ -49,14 +49,41 @@ public class Guard : MonoBehaviour
     {
         CurrentmovingSpeed = movingSpeed;
         presentHealth = characterHealth;
+
         playerBody = GameObject.Find("Player");
-        characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+
+        if (characterController == null)
+        {
+            characterController = GetComponent<CharacterController>();
+        }
+
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
+        if (characterController == null)
+        {
+            Debug.LogWarning("Guard: No CharacterController found on " + gameObject.name);
+        }
+
+        if (animator == null)
+        {
+            Debug.LogWarning("Guard: No Animator found on " + gameObject.name);
+        }
     }
 
     void Update()
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            SetAnimatorBool("Walk", false);
+            SetAnimatorBool("Run", false);
+            SetAnimatorBool("Shoot", false);
+            return;
+        }
+
+        ApplyGravity();
 
         playerInvisionRadius = CanSeePlayer();
         playerInshootingRadius = Physics.CheckSphere(transform.position, shootingRadius, PlayerLayer);
@@ -84,8 +111,17 @@ public class Guard : MonoBehaviour
         }
     }
 
+    void SetAnimatorBool(string parameterName, bool value)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(parameterName, value);
+        }
+    }
+
     bool CanSeePlayer()
     {
+        if (isDead) return false;
         if (playerBody == null) return false;
 
         Vector3 eyePosition = transform.position + Vector3.up * 1.5f;
@@ -95,7 +131,9 @@ public class Guard : MonoBehaviour
         float distanceToPlayer = directionToPlayer.magnitude;
 
         if (distanceToPlayer > visionRadius)
+        {
             return false;
+        }
 
         Vector3 flatDirectionToPlayer = directionToPlayer;
         flatDirectionToPlayer.y = 0f;
@@ -103,7 +141,9 @@ public class Guard : MonoBehaviour
         float angle = Vector3.Angle(transform.forward, flatDirectionToPlayer);
 
         if (angle > visionAngle * 0.5f)
+        {
             return false;
+        }
 
         if (Physics.Raycast(eyePosition, directionToPlayer.normalized, out RaycastHit hit, visionRadius))
         {
@@ -118,26 +158,46 @@ public class Guard : MonoBehaviour
 
     private void Walk()
     {
-        if (waypoints.Count == 0) return;
+        if (isDead) return;
+        if (characterController == null) return;
+        if (waypoints == null || waypoints.Count == 0) return;
 
         Transform targetWaypoint = waypoints[currentWaypointIndex];
-        Vector3 directionToWaypoint = (targetWaypoint.position - transform.position).normalized;
-        Vector3 moveVector = directionToWaypoint * movingSpeed * Time.deltaTime;
 
-        characterController.Move(moveVector);
+        Vector3 directionToWaypoint = targetWaypoint.position - transform.position;
+        directionToWaypoint.y = 0f;
 
-        Vector3 lookDirection = new Vector3(directionToWaypoint.x, 0, directionToWaypoint.z);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
+        float distanceToWaypoint = directionToWaypoint.magnitude;
 
-        animator.SetBool("Run", false);
-        animator.SetBool("Walk", true);
-        animator.SetBool("Shoot", false);
+        if (distanceToWaypoint > 0.01f)
+        {
+            directionToWaypoint.Normalize();
 
-        if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.1f)
+            Vector3 moveVector = directionToWaypoint * movingSpeed * Time.deltaTime;
+            characterController.Move(moveVector);
+
+            Vector3 lookDirection = new Vector3(directionToWaypoint.x, 0, directionToWaypoint.z);
+
+            if (lookDirection != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    Quaternion.LookRotation(lookDirection),
+                    Time.deltaTime * turningSpeed
+                );
+            }
+        }
+
+        SetAnimatorBool("Run", false);
+        SetAnimatorBool("Walk", true);
+        SetAnimatorBool("Shoot", false);
+
+        if (distanceToWaypoint < 0.2f)
         {
             if (movingForward)
             {
                 currentWaypointIndex++;
+
                 if (currentWaypointIndex >= waypoints.Count)
                 {
                     currentWaypointIndex = waypoints.Count - 1;
@@ -147,6 +207,7 @@ public class Guard : MonoBehaviour
             else
             {
                 currentWaypointIndex--;
+
                 if (currentWaypointIndex < 0)
                 {
                     currentWaypointIndex = 0;
@@ -158,41 +219,84 @@ public class Guard : MonoBehaviour
 
     void ChasePlayer()
     {
+        if (isDead) return;
+        if (playerBody == null) return;
+        if (characterController == null) return;
+
         CurrentmovingSpeed = runningSpeed;
 
-        Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
-        Vector3 moveVector = directionToPlayer * CurrentmovingSpeed * Time.deltaTime;
+        Vector3 directionToPlayer = playerBody.transform.position - transform.position;
+        directionToPlayer.y = 0f;
 
+        if (directionToPlayer.magnitude < 0.01f)
+        {
+            return;
+        }
+
+        directionToPlayer.Normalize();
+
+        Vector3 moveVector = directionToPlayer * CurrentmovingSpeed * Time.deltaTime;
         characterController.Move(moveVector);
 
         Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
 
-        animator.SetBool("Run", true);
-        animator.SetBool("Walk", false);
-        animator.SetBool("Shoot", false);
+        if (lookDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(lookDirection),
+                Time.deltaTime * turningSpeed
+            );
+        }
+
+        SetAnimatorBool("Run", true);
+        SetAnimatorBool("Walk", false);
+        SetAnimatorBool("Shoot", false);
     }
 
     void ShootPlayer()
     {
+        if (isDead) return;
+        if (playerBody == null) return;
+        if (ShootingRaycastArea == null) return;
+
         CurrentmovingSpeed = 0f;
 
-        Vector3 directionToPlayer = (playerBody.transform.position - transform.position).normalized;
-        Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDirection), Time.deltaTime * turningSpeed);
+        Vector3 directionToPlayer = playerBody.transform.position - transform.position;
+        directionToPlayer.y = 0f;
 
-        animator.SetBool("Run", false);
-        animator.SetBool("Walk", false);
-        animator.SetBool("Shoot", true);
+        if (directionToPlayer.magnitude > 0.01f)
+        {
+            directionToPlayer.Normalize();
+
+            Vector3 lookDirection = new Vector3(directionToPlayer.x, 0, directionToPlayer.z);
+
+            if (lookDirection != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    Quaternion.LookRotation(lookDirection),
+                    Time.deltaTime * turningSpeed
+                );
+            }
+        }
+
+        SetAnimatorBool("Run", false);
+        SetAnimatorBool("Walk", false);
+        SetAnimatorBool("Shoot", true);
 
         if (!previouslyShoot)
         {
+            PlayEnemyShootSound();
+
             RaycastHit hit;
+
             if (Physics.Raycast(ShootingRaycastArea.transform.position, ShootingRaycastArea.transform.forward, out hit, shootingRange))
             {
                 Debug.Log("Guard Hit " + hit.transform.name);
 
                 PlayerMovement player = hit.transform.GetComponent<PlayerMovement>();
+
                 if (player == null)
                 {
                     player = hit.transform.GetComponentInParent<PlayerMovement>();
@@ -209,6 +313,42 @@ public class Guard : MonoBehaviour
         }
     }
 
+    void PlayEnemyShootSound()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayEnemyRifleShoot();
+        }
+        else
+        {
+            Debug.LogWarning("Guard: SoundManager instance is missing.");
+        }
+    }
+
+    void PlayGuardHitSound()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayGuardHit();
+        }
+        else
+        {
+            Debug.LogWarning("Guard: SoundManager instance is missing.");
+        }
+    }
+
+    void PlayGuardDeathSound()
+    {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayGuardDeath();
+        }
+        else
+        {
+            Debug.LogWarning("Guard: SoundManager instance is missing.");
+        }
+    }
+
     private void ActiveShooting()
     {
         previouslyShoot = false;
@@ -216,7 +356,10 @@ public class Guard : MonoBehaviour
 
     public void characterHitDamage(float takeDamage)
     {
-        if (isDead) return;
+        if (isDead)
+        {
+            return;
+        }
 
         Debug.Log("Guard took damage: " + takeDamage);
 
@@ -231,9 +374,20 @@ public class Guard : MonoBehaviour
             presentHealth = 0;
             isDead = true;
 
+            PlayGuardDeathSound();
+
             Debug.Log("Guard died");
-            animator.SetBool("Die", true);
+
+            SetAnimatorBool("Walk", false);
+            SetAnimatorBool("Run", false);
+            SetAnimatorBool("Shoot", false);
+            SetAnimatorBool("Die", true);
+
             characterDie();
+        }
+        else
+        {
+            PlayGuardHitSound();
         }
     }
 
@@ -241,13 +395,35 @@ public class Guard : MonoBehaviour
     {
         CurrentmovingSpeed = 0f;
         shootingRange = 0f;
+        shootingRadius = 0f;
+        visionRadius = 0f;
+
         isAlerted = false;
         playerDetected = false;
+        playerInvisionRadius = false;
+        playerInshootingRadius = false;
+
+        CancelInvoke(nameof(ActiveShooting));
+        previouslyShoot = true;
 
         if (characterController != null)
         {
             characterController.enabled = false;
         }
+    }
+
+    void ApplyGravity()
+    {
+        if (characterController == null) return;
+        if (!characterController.enabled) return;
+
+        if (characterController.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+
+        velocity.y -= gravity * Time.deltaTime;
+        characterController.Move(velocity * Time.deltaTime);
     }
 
     void FootStep()

@@ -15,6 +15,9 @@ public class AssassinationManager : MonoBehaviour
     public float killDelay = 0.8f;
     public float assassinateDamage = 999f;
 
+    [Header("Assassination Sound")]
+    public float assassinateSoundDelay = 0.15f;
+
     [Header("Debug")]
     public bool debugIsUnarmed;
     public bool debugFoundTarget;
@@ -25,6 +28,7 @@ public class AssassinationManager : MonoBehaviour
     private Guard currentGuard;
     private Guard123 currentGuard123;
     private Boss currentBoss;
+    private MeleeGuard currentMeleeGuard;
 
     private bool isAssassinating = false;
 
@@ -94,6 +98,7 @@ public class AssassinationManager : MonoBehaviour
         currentGuard = null;
         currentGuard123 = null;
         currentBoss = null;
+        currentMeleeGuard = null;
 
         debugFoundTarget = false;
         debugIsBehind = false;
@@ -158,6 +163,23 @@ public class AssassinationManager : MonoBehaviour
                     return;
                 }
             }
+
+            MeleeGuard meleeGuard = hit.GetComponentInParent<MeleeGuard>();
+
+            if (meleeGuard != null)
+            {
+                debugFoundTarget = true;
+                debugTargetName = meleeGuard.gameObject.name;
+
+                bool behind = IsBehindTarget(meleeGuard.transform);
+                debugIsBehind = behind;
+
+                if (!meleeGuard.isDead && behind)
+                {
+                    currentMeleeGuard = meleeGuard;
+                    return;
+                }
+            }
         }
     }
 
@@ -174,6 +196,11 @@ public class AssassinationManager : MonoBehaviour
         }
 
         if (currentBoss != null && !currentBoss.isDead)
+        {
+            return true;
+        }
+
+        if (currentMeleeGuard != null && !currentMeleeGuard.isDead)
         {
             return true;
         }
@@ -222,6 +249,11 @@ public class AssassinationManager : MonoBehaviour
             animatorManager.TriggerAssassinate();
         }
 
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayAssassinateDelayed(assassinateSoundDelay);
+        }
+
         yield return new WaitForSeconds(killDelay);
 
         if (currentGuard != null && !currentGuard.isDead)
@@ -239,9 +271,15 @@ public class AssassinationManager : MonoBehaviour
             currentBoss.characterHitDamage(assassinateDamage);
         }
 
+        if (currentMeleeGuard != null && !currentMeleeGuard.isDead)
+        {
+            currentMeleeGuard.characterHitDamage(assassinateDamage);
+        }
+
         currentGuard = null;
         currentGuard123 = null;
         currentBoss = null;
+        currentMeleeGuard = null;
 
         yield return new WaitForSeconds(0.3f);
 
